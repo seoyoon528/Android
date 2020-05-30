@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "800529615117",
+    "firebase_url": "https://malivelogin.firebaseio.com",
+    "project_id": "malivelogin",
+    "storage_bucket": "malivelogin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800529615117:android:020a3f673647da755d4844",
+        "android_client_info": {
+          "package_name": "com.example.googlelogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800529615117-p2giun65b0fhff5ao028je4koslimgoq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.googlelogin",
+            "certificate_hash": "85b5181058b27b8203378369bfb9e99f47e87a5a"
+          }
+        },
+        {
+          "client_id": "800529615117-mischrj7ongfi5dpeco75lpmeeve12h3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWKyxlTKlm6JsxAO5mFpB48ONv-vTy4fc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800529615117-mischrj7ongfi5dpeco75lpmeeve12h3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
