@@ -4,18 +4,21 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 
 public class CommentItem  {
-    private int num;
+    private String num;
     private String name;
     private String comment;
     private String icon;
+//    private Drawable icon;
+    private String date;
 
-
-    public CommentItem(int num, String name, String comment, String icon) {
+    public CommentItem(String num, String name, String comment, String icon, String date) {
         this.num = num;
         this.name = name;
         this.comment = comment;
         this.icon = icon;
+        this.date = date;
     }
+
 
     public String getName() {
         return name;
@@ -41,60 +44,19 @@ public class CommentItem  {
         this.icon = icon;
     }
 
-    public int getNum() {
+    public String getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(String num) {
         this.num = num;
     }
-}
 
-//
-//import android.graphics.drawable.Drawable;
-//        import android.graphics.drawable.Icon;
-//
-//public class CommentItem  {
-//    private int num;
-//    private String name;
-//    private String comment;
-//    private Drawable icon;
-//
-//    public CommentItem(String name, String comment, Drawable icon) {
-//        this.name = name;
-//        this.comment = comment;
-//        this.icon = icon;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public String getComment() {
-//        return comment;
-//    }
-//
-//    public void setComment(String comment) {
-//        this.comment = comment;
-//    }
-//
-//    public Drawable getIcon() {
-//        return icon;
-//    }
-//
-//    public void setIcon(Drawable icon) {
-//        this.icon = icon;
-//    }
-//
-//    public int getNum() {
-//        return num;
-//    }
-//
-//    public void setNum(int num) {
-//        this.num = num;
-//    }
-//}
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+}

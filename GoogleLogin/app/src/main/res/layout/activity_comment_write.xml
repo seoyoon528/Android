@@ -4,24 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C4DBE2"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00000000"
         android:gravity="center"
         android:padding="15dp"
-        android:text="방명록"
+        android:text="방명록 작성"
         android:textSize="20dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
@@ -76,38 +75,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:text="작성"
+                android:text="등록"
                 android:textColor="#000000" />
         </LinearLayout>
 
     </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/CommentList"
-                android:layout_width="match_parent"
-                android:layout_height="400dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <Button
-                android:id="@+id/btn_write"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="25dp"
-                android:alpha="0.6"
-                android:text="작성" />
-
-        </FrameLayout>
-    </ScrollView>
-
 </LinearLayout>
