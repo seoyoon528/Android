@@ -1,13 +1,13 @@
 package com.example.googlelogin;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,31 +28,26 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.w3c.dom.Comment;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GuestBookActivity extends AppCompatActivity implements OnItemClick {
-
+public class GuestBookFragment extends Fragment implements OnItemClick {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+    private GuestBookWriteFragment guestBookWriteFragment;
+
+
     private RecyclerView recyclerView;
-    public CommentAdapter adapter;
+    public static CommentAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<CommentItem> arrayList;
 
@@ -61,7 +59,7 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
     private ImageView CommentIcon;
     private String CommentCount;
 
-    private Button btn_write;
+    private Button btn_guestbook_write;
     private Button btn_insert;
     private Button btn_delete;
     private Button btn_like;
@@ -69,50 +67,39 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
     boolean likeState = false;
     boolean unlikeState = false;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guest_book);
-        setTitle("방명록");
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_guestbook, container, false);
 
-        CommentNum = findViewById(R.id.CommentNum);
-        CommentName = findViewById(R.id.CommentName);
-        CommentDate = findViewById(R.id.CommentDate);
-        Comment = findViewById(R.id.WriteComment);
-        CommentIcon = findViewById(R.id.CommentIcon);
+        CommentNum = view.findViewById(R.id.CommentNum);
+        CommentName = view.findViewById(R.id.CommentName);
+        CommentDate = view.findViewById(R.id.CommentDate);
+        Comment = view.findViewById(R.id.WriteComment);
+        CommentIcon = view.findViewById(R.id.CommentIcon);
 
-        btn_write = findViewById(R.id.btn_guestbook_write);
-        btn_insert = findViewById(R.id.btn_insert);
-        btn_delete = findViewById(R.id.btn_delete);
+        btn_insert = view.findViewById(R.id.btn_insert);
+        btn_delete = view.findViewById(R.id.btn_delete);
+        btn_guestbook_write = (Button)view.findViewById(R.id.btn_guestbook_write);
 
-        // 푸쉬 알림 보내기
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener( GuestBookActivity.this, new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        final String TAG = "MsgService";
+        // 방명록 '작성'버튼을 누를 시
+        btn_guestbook_write.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // GuestBookWriteFragment로 데이터 넘기기
+                Bundle bundle = new Bundle();
+                bundle.putInt("CommentCount", adapter.getItemCount());
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                GuestBookWriteFragment guestBookWriteFragment = new GuestBookWriteFragment();
+                guestBookWriteFragment.setArguments(bundle);
 
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-                        // 새로운 인스턴스 ID 토큰을 받아온다
-                        String token = task.getResult().getToken();
-
-                        Log.e("newToken",token);
-                        Toast.makeText(GuestBookActivity.this, "푸시푸시 베이베", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-//        // 좋아요 버튼 누를 시 푸쉬알림 기능 예외처리
-//        try {
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            Log.d("IDService","device token : "+token);
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
-
+                //TODO 프래그먼트 전환할 프레임 연결
+                // '작성'버튼 누르면 화면 전환
+//                transaction.replace(R.id.main_frame, guestBookWriteFragment);
+//                transaction.commit();
+//                ((HomeActivity)getActivity()).setFragment(5);
+            }
+        });
 
 
         // DB의 데이터 불러와 어레이리스트에 넣기
@@ -144,10 +131,10 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
                 });
 
         // 어댑터와 리사이클러뷰 연결해서 화면에 띄우기
-        recyclerView = (RecyclerView) findViewById(R.id.CommentList);
+        recyclerView = (RecyclerView) view.findViewById(R.id.CommentList);
         recyclerView.setHasFixedSize(true);
-        adapter = new CommentAdapter(arrayList, this);
-        layoutManager = new LinearLayoutManager(this);
+        adapter = new CommentAdapter(arrayList, (OnItemClick) this);
+        layoutManager = new LinearLayoutManager(getActivity());
 
         // 리사이클러뷰 역순 출력
         ((LinearLayoutManager) layoutManager).setReverseLayout(true);
@@ -159,21 +146,12 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        //'작성' 버튼 클릭 시
-        btn_write.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GuestBookActivity.this, CommentWriteActivity.class);
-//                intent.putExtra("CommentCount", String.valueOf(adapter.getItemCount()));
-                intent.putExtra("CommentCount", adapter.getItemCount());
-                startActivity(intent);
-                Toast.makeText(GuestBookActivity.this, "작성화면으로 이동!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        return view;
     }
 
+
     // 글 작성 액티비티 종료 후 리사이클러뷰 새로고침
-   @Override
+    @Override
     public void onResume() {
         super.onResume();
         // DB의 데이터 불러와 어레이리스트에 넣기
@@ -205,10 +183,10 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
                 });
 
         // 어댑터와 리사이클러뷰 연결해서 화면에 띄우기
-        recyclerView = (RecyclerView) findViewById(R.id.CommentList);
+//        recyclerView = (RecyclerView) view.findViewById(R.id.CommentList);
         recyclerView.setHasFixedSize(true);
-        adapter = new CommentAdapter(arrayList, this);
-        layoutManager = new LinearLayoutManager(this);
+        adapter = new CommentAdapter(arrayList, (OnItemClick) this);
+        layoutManager = new LinearLayoutManager(getActivity());
 
         // 리사이클러뷰 역순 출력
         ((LinearLayoutManager) layoutManager).setReverseLayout(true);
@@ -222,13 +200,12 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
     }
 
 
-
     // 방명록 글 삭제 메소드
     @Override
     public void deleteItem(final int position) {
 
         //삭제 여부를 묻는 알림창 띄우기
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("삭제");
         builder.setMessage("삭제하시겠습니까?");
         builder.setCancelable(true);
@@ -239,28 +216,24 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                                // DB 내부의 데이터 삭제
-//                                firestore.collection(FirebaseID.GuestBook).document(arrayList.get(position).getComment())
-                                firestore.collection(FirebaseID.GuestBook).document(arrayList.get(position).getNum())
+                        // DB 내부의 데이터 삭제
+                        firestore.collection(FirebaseID.GuestBook).document(arrayList.get(position).getNum())
                                 .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(GuestBookActivity.this, "삭제 완료!", Toast.LENGTH_LONG).show();
-                                                Log.d("GuestBookActivity", "DocumentSnapshot successfully deleted!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(GuestBookActivity.this, "삭제 실패!", Toast.LENGTH_LONG).show();
-                                                Log.w("GuestBookActivity", "Error deleting document", e);
-                                            }
-                                        });
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+//                                        Log.d("GuestBookActivity", "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+//                                        Log.w("GuestBookActivity", "Error deleting document", e);
+                                    }
+                                });
+
                         // 새로 고침
-                        Intent intent = getIntent();
-                        finish();
-                        startActivity(intent);
+                        refresh();
                     }
                 });
 
@@ -282,7 +255,7 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
     public void reportItem(final int position) {
 
         // 신고 여부를 묻는 알림창 띄우기
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("신고");
         builder.setMessage("이 글을 신고하시겠습니까?");
         builder.setCancelable(true);
@@ -330,10 +303,7 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
                                 });
 
                         // 새로 고침
-                        Intent intent = getIntent();
-                        finish();
-                        startActivity(intent);
-
+                        refresh();
                     }
                 });
 
@@ -348,5 +318,11 @@ public class GuestBookActivity extends AppCompatActivity implements OnItemClick 
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    // 리사이클러뷰 새로고침 메소드
+    private void refresh() {
+        fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.detach(this).attach(this).commit();
     }
 }

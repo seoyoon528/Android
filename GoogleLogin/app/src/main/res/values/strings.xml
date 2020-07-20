@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GoogleLogin</string>
+
+    <string name="default_notification_channel_id">Push Test</string>
+    <string name="default_notification_channel_name" translatable="true">콕 찌르기!</string>
+    <string name="msg_token_fmt">당신은 찔렸습니다</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

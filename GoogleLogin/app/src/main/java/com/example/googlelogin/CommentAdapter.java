@@ -39,7 +39,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.callback = listener;
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //뷰홀더 최초로 만들어내는 역할
@@ -90,8 +89,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 }
             }
         });
-
-
     }
 
 
@@ -126,11 +123,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
     }
 
-
 //    public void addItem(CommentItem item){
 //        arrayList.add(item);
 //    }
-
-
 }
 

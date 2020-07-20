@@ -2,6 +2,9 @@ package com.example.googlelogin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +34,10 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView iv_profile; //이미지 뷰
     private Button btn_logout; // 로그아웃 버튼
     private Button btn_guestBook; // 방명록 버튼
+
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+    private GuestBookFragment guestBookFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +76,5 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "방명록으로 이동!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
     }
 }
